@@ -11,6 +11,8 @@ d:
   - dmd-2.082.1
   - dmd-2.081.2
   - dmd-2.080.1
+  - dmd-2.079.1
+  - dmd-2.078.3
   - ldc-1.17.0 # eq to dmd v2.087
   - ldc-1.16.0 # eq to dmd v2.086.1
   - ldc-1.15.0 # eq to dmd v2.085.1
@@ -19,11 +21,6 @@ d:
   - ldc-1.12.0 # eq to dmd v2.082.1
   - ldc-1.11.0 # eq to dmd v2.081.2
   - ldc-1.10.0 # eq to dmd v2.080.1
-  - gdc
-
-os:
- - linux
- - osx
 
 script:
   - dub build --config=SQLite --compiler=${DC}
@@ -37,5 +34,13 @@ addons:
     brewfile: true
 
 matrix:
+  include:
+    - d: dmd
+      os: osx
+    - d: ldc
+      os: osx
+    - d: dmd-beta
+    - d: gdc
   allow_failures:
+    - d: dmd-beta
     - d: gdc
