@@ -1,8 +1,5 @@
 language: d
 
-sudo: required
-dist: trusty
-
 d:
   - ldc
   - dmd
@@ -24,10 +21,6 @@ d:
   - ldc-1.10.0 # eq to dmd v2.080.1
   - gdc
 
-before_install:
- - "if [ ${TRAVIS_OS_NAME} = 'osx' ]; then brew update; fi"
- - "if [ ${TRAVIS_OS_NAME} = 'osx' ]; then brew install sqlite && brew link --force sqlite; fi"
-
 os:
  - linux
  - osx
@@ -38,7 +31,10 @@ script:
 
 addons:
   apt:
+    update: true
     packages: [ libsqlite3-dev ]
+  homebrew:
+    brewfile: true
 
 matrix:
   allow_failures:
