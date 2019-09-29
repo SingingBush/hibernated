@@ -41,12 +41,48 @@ jobs:
     - d: ldc
       os: osx
       if: branch = master
-    - stage: hdtest
+
+    - stage: Integration Test - SQLite
       d: dmd
-      script: cd hdtest && dub --config=SQLite --compiler=${DC}
-    - stage: examples
+      script:
+        - cd hdtest && dub build --config=SQLite
+        - bin/hdtest ddbc:sqlite:zzz.db
+
+    - stage: Integration Test - MySQL
       d: dmd
-      script: cd examples/example1 && dub run --compiler=${DC}
+      services: mysql
+      before_script:
+        - mysql --user=travis -e 'CREATE DATABASE IF NOT EXISTS hdtestdb;'
+      script:
+        - cd hdtest && dub build --config=MySQL
+        - bin/hdtest ddbc:mysql://127.0.0.1:3306/hdtestdb?user=travis
+
+    - stage: Integration Test - PostgreSQL
+      d: dmd
+      services: postgresql
+      before_script:
+        - psql -c 'create database hdtestdb;' -U postgres
+      script:
+        - cd hdtest && dub build --config=PGSQL
+        - bin/hdtest ddbc:postgresql://127.0.0.1:5432/hdtestdb?user=postgres
+
+    # - stage: Integration Test - MS-SQL
+    #   d: dmd
+    #   env: MS_SQL_2017_msodbcsql17
+    #   services: docker
+    #   before_install:
+    #     - chmod 644 .travis/*.sh
+    #     - bash .travis/docker-mssql.sh -n "ms-sql" -p "bbk4k77JKH88g54" -v "2017-latest-ubuntu"
+    #     - bash .travis/xenial-msodbc.sh -p "msodbcsql17"
+    #   before_script:
+    #     - "docker exec -it ms-sql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P bbk4k77JKH88g54 -Q 'CREATE DATABASE hdtestdb'"
+    #   script:
+    #     - cd hdtest && dub build --config=ODBC
+    #     - bin/hdtest ddbc:odbc://localhost,1433?user=sa,password=bbk4k77JKH88g54,driver=FreeTDS
+
+    - stage: Examples
+      d: dmd
+      script: cd examples/example1 && dub run
   allow_failures:
     - d: dmd-beta
     - d: gdc
