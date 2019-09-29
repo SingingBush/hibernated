@@ -42,32 +42,32 @@ jobs:
       os: osx
       if: branch = master
 
-    - stage: Integration Test - SQLite
+    - stage: Integration Tests
       d: dmd
+      env: SQLite
       script:
-        - cd hdtest && dub build --config=SQLite
+        - cd hdtest && dub
         - bin/hdtest ddbc:sqlite:zzz.db
 
-    - stage: Integration Test - MySQL
-      d: dmd
+    - d: dmd
+      env: MySQL
       services: mysql
       before_script:
         - mysql --user=travis -e 'CREATE DATABASE IF NOT EXISTS hdtestdb;'
       script:
-        - cd hdtest && dub build --config=MySQL
+        - cd hdtest && dub build
         - bin/hdtest ddbc:mysql://127.0.0.1:3306/hdtestdb?user=travis
 
-    - stage: Integration Test - PostgreSQL
-      d: dmd
+    - d: dmd
+      env: PostgreSQL
       services: postgresql
       before_script:
         - psql -c 'create database hdtestdb;' -U postgres
       script:
-        - cd hdtest && dub build --config=PGSQL
+        - cd hdtest && dub build
         - bin/hdtest ddbc:postgresql://127.0.0.1:5432/hdtestdb?user=postgres
 
-    # - stage: Integration Test - MS-SQL
-    #   d: dmd
+    # - d: dmd
     #   env: MS_SQL_2017_msodbcsql17
     #   services: docker
     #   before_install:
@@ -77,7 +77,7 @@ jobs:
     #   before_script:
     #     - "docker exec -it ms-sql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P bbk4k77JKH88g54 -Q 'CREATE DATABASE hdtestdb'"
     #   script:
-    #     - cd hdtest && dub build --config=ODBC
+    #     - cd hdtest && dub build
     #     - bin/hdtest ddbc:odbc://localhost,1433?user=sa,password=bbk4k77JKH88g54,driver=FreeTDS
 
     - stage: Examples

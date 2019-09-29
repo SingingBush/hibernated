@@ -218,10 +218,16 @@ void testHibernate(const string uri) {
     writeln("Loading Person");
     // load and check data
     auto qresult = sess.createQuery("FROM Person WHERE name=:Name and some_field_with_underscore != 42").setParameter("Name", "Alex");
+    
+    assert((qresult.list!Person()).length == 1, "There should be 1 row which has a Person with name of 'Alex'");
+
+    // Variant[][] rows = qresult.listRows();
     writefln( "query result: %s", qresult.listRows() );
+
     Person u11 = qresult.uniqueResult!Person();
     //Person u11 = sess.createQuery("FROM Person WHERE name=:Name and some_field_with_underscore != 42").setParameter("Name", "Alex").uniqueResult!Person();
     writefln("Checking Person 11 : %s", u11);
+    assert(u11.name == "Alex");
     assert(u11.roles.length == 2);
     assert(u11.roles[0].name == "role10" || u11.roles.get()[0].name == "role11");
     assert(u11.roles[1].name == "role10" || u11.roles.get()[1].name == "role11");

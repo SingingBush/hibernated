@@ -838,9 +838,10 @@ class PropertyLoadMap {
 /// Implementation of HibernateD Query
 class QueryImpl : Query
 {
-	SessionImpl sess;
-	ParsedQuery query;
-	ParameterValues params;
+	private SessionImpl sess;
+	private ParsedQuery query;
+	private ParameterValues params;
+    
 	this(SessionImpl sess, string queryString) {
 		this.sess = sess;
         //writeln("QueryImpl(): HQL: " ~ queryString);
